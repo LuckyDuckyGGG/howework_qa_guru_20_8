@@ -1,0 +1,6 @@
+selene==2.0.0rc9
+selenium~=4.34.2
+pytest
+
+
+
