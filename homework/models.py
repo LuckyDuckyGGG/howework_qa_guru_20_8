@@ -74,12 +74,12 @@ class Cart:
         Если remove_count больше, чем количество продуктов в позиции, то удаляется вся позиция
         """
         if product in self.products:
-            if self.products[product] >= remove_count:
-                self.products = {}
-            elif remove_count is None:
-                self.products = {}
+            if remove_count is None:
+                del self.products[product]
+            elif self.products[product] <= remove_count:
+                del self.products[product]
             else:
-                self.products -= remove_count
+                self.products[product] -= remove_count
 
 
     def clear(self):
@@ -88,7 +88,7 @@ class Cart:
     def get_total_price(self) -> float:
         total = 0.0
         for product, quantity in self.products.items():
-            total += Product.price * quantity
+            total += product.price * quantity
         return total
 
 
@@ -99,8 +99,9 @@ class Cart:
         В этом случае нужно выбросить исключение ValueError
         """
         for product, quantity in self.products.items():
-            if product.check_quantity(product):
+            if product.check_quantity(quantity):
                 product.buy(quantity)
+                self.clear()
             else:
-                ValueError(f"На складе недостаточно товара '{product.name}'")
+                raise ValueError(f"На складе недостаточно товара '{product.name}'")
 
